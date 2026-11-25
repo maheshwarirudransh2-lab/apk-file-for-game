@@ -18,15 +18,16 @@ jobs:
           path: |
             ~/.buildozer
             .buildozer
-          key: buildozer-${{ runner.os }}-${{ hashFiles('buildozer.spec', '.github/workflows/build.yml') }}
+          key: buildozer-v2-${{ runner.os }}-${{ hashFiles('buildozer.spec', '.github/workflows/build.yml') }}
           restore-keys: |
+            buildozer-v2-${{ runner.os }}-
             buildozer-${{ runner.os }}-
 
       - name: Install system and Python build tools
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            git zip unzip openjdk-17-jdk autoconf libtool pkg-config \
+            git zip unzip openjdk-17-jdk autoconf automake libtool libtool-bin libltdl-dev pkg-config \
             zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 \
             cmake libffi-dev libssl-dev python3-pip python3-setuptools python3-wheel
           python3 -m pip install --break-system-packages --upgrade pip setuptools wheel cython buildozer
@@ -37,6 +38,7 @@ jobs:
       - name: Build APK with Buildozer
         env:
           JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
+          ACLOCAL_PATH: /usr/share/aclocal
           PATH: /usr/lib/jvm/temurin-17-jdk-amd64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/runner/.local/bin
         run: buildozer -v android debug
 
